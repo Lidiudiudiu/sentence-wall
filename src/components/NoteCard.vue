@@ -54,16 +54,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@font-face {
-    font-family: zihunbaige;
-    src: url("@/assets/fonts/font-bag/zihunbaige.ttf");
-}
-
-@font-face {
-    font-family: qianming;
-    src: url("@/assets/fonts/font-bag/qingming.ttf");
-}
-
 .my-note-card {
     height: 240px;
     background-color: rgba(252, 175, 162, .3);
@@ -71,6 +61,7 @@ export default {
     box-sizing: border-box;
     position: relative;
     cursor: pointer;
+    transition: all 0.3s;
     // opacity: 0.95;
 
     .top {

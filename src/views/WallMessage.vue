@@ -9,12 +9,17 @@
                 }}</p>
         </div>
         <div class="card">
-            <NoteCard v-for="(e, index) in note" :key="index" :note="e"></NoteCard>
+            <NoteCard v-for="(e, index) in note" :key="index" :note="e"
+                :class="{ cardselected: index === cardSelected }" @click="selectCard(index)">
+            </NoteCard>
         </div>
-        <div class="add" :style="{ bottom: addBottom + 'px' }">
+        <div class="add" :style="{ bottom: addBottom + 'px' }" @click="addCard" v-show="!modal">
             <span class="icon-plus"></span>
         </div>
-        <MyModal></MyModal>
+        <MyModal :title="title" @close="closeModal" :isModal="modal">
+            <NewCard :id="id" @addClose="changeModal" v-if="cardSelected == -1"></NewCard>
+            <CardDetail v-if="cardSelected != -1" :card="note[cardSelected]"></CardDetail>
+        </MyModal>
     </div>
 </template>
 
@@ -23,6 +28,8 @@ import { wallType, label } from '@/utils/data';
 import NoteCard from '@/components/NoteCard.vue'
 import { note } from "../../mock/index.js"
 import MyModal from '@/components/MyModal.vue'
+import NewCard from '@/components/NewCard.vue'
+import CardDetail from '@/components/CardDetail.vue'
 export default {
     data() {
         return {
@@ -31,12 +38,17 @@ export default {
             id: 0, //留言墙与照片墙的切换
             nlabel: -1,
             note: note.data,
-            addBottom: 30
+            addBottom: 30,
+            title: '写留言',
+            modal: false,
+            cardSelected: -1
         }
     },
     components: {
         NoteCard,
-        MyModal
+        MyModal,
+        NewCard,
+        CardDetail
     },
     methods: {
         selectNode(e) {
@@ -57,6 +69,31 @@ export default {
                 this.addBottom = 30
             }
             console.log('生效了')
+        },
+        //弹窗的打开与关闭
+        changeModal() {
+            this.modal = !this.modal;
+        },
+
+        closeModal() {
+            this.changeModal();
+            this.cardSelected = -1;
+        },
+
+        //卡片的样式
+        selectCard(e) {
+            this.title = '';
+            if (e != this.cardSelected) {
+                this.cardSelected = e;
+                this.modal = true;
+            } else {
+                this.cardSelected = -1
+                this.modal = false;
+            }
+        },
+        addCard() {
+            this.title = '写留言';
+            this.changeModal();
         }
     },
     mounted() {
@@ -85,6 +122,7 @@ export default {
 
     .label {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         margin-top: 40px;
 
@@ -117,6 +155,13 @@ export default {
         justify-content: center;
         padding-top: 30px;
         padding-bottom: 20px;
+
+
+        .cardselected {
+            border: 1px solid @primary-color;
+        }
+
+
     }
 
     .add {

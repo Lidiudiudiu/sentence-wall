@@ -21,8 +21,10 @@ export default {
 
 <style lang="less" scoped>
 .my-button {
+    width: 100%;
     text-align: center;
     border: none;
+    cursor: pointer;
 }
 
 //size

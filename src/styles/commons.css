@@ -1,3 +1,11 @@
+@font-face {
+  font-family: zihunbaige;
+  src: url("@/assets/fonts/font-bag/zihunbaige.ttf");
+}
+@font-face {
+  font-family: qianming;
+  src: url("@/assets/fonts/font-bag/qingming.ttf");
+}
 body {
   padding: 0px;
   margin: 0px;
