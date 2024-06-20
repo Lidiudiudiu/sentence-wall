@@ -8,47 +8,72 @@
                 label[id]" :key="index">{{ e
                 }}</p>
         </div>
-        <div class="card">
+        <div class="card" v-show="id == 0">
             <NoteCard v-for="(e, index) in note" :key="index" :note="e"
                 :class="{ cardselected: index === cardSelected }" @click="selectCard(index)">
             </NoteCard>
+        </div>
+        <div class="photo" v-show="id == 1">
+            <PhotoCard :photo="e" class="photo-card" v-for="(e, index) in photo" :key="index"
+                @click="selectCard(index)"></PhotoCard>
         </div>
         <div class="add" :style="{ bottom: addBottom + 'px' }" @click="addCard" v-show="!modal">
             <span class="icon-plus"></span>
         </div>
         <MyModal :title="title" @close="closeModal" :isModal="modal">
             <NewCard :id="id" @addClose="changeModal" v-if="cardSelected == -1"></NewCard>
-            <CardDetail v-if="cardSelected != -1" :card="note[cardSelected]"></CardDetail>
+            <CardDetail v-if="cardSelected != -1" :card="cards[cardSelected]"></CardDetail>
         </MyModal>
+        <MyViewer :isView="view" :photos="photoArr" :nowNumber="cardSelected" @viewSwitch="viewSwitch"></MyViewer>
     </div>
 </template>
 
 <script>
 import { wallType, label } from '@/utils/data';
 import NoteCard from '@/components/NoteCard.vue'
-import { note } from "../../mock/index.js"
+import { note, photo } from "../../mock/index.js"
 import MyModal from '@/components/MyModal.vue'
 import NewCard from '@/components/NewCard.vue'
 import CardDetail from '@/components/CardDetail.vue'
+import PhotoCard from '@/components/PhotoCard.vue'
+import MyViewer from '@/components/MyViewer.vue'
 export default {
     data() {
         return {
             wallType,
             label,
-            id: 0, //留言墙与照片墙的切换
             nlabel: -1,
             note: note.data,
+            photo: photo.data,
+            photoArr: [],
             addBottom: 30,
             title: '写留言',
             modal: false,
-            cardSelected: -1
+            cardSelected: -1,
+            view: false
         }
     },
     components: {
         NoteCard,
         MyModal,
         NewCard,
-        CardDetail
+        CardDetail,
+        PhotoCard,
+        MyViewer
+    },
+    computed: {
+        id() {
+            return this.$route.query.id
+        },
+        cards() {
+            let a = '';
+            if (this.$route.query.id == 0) {
+                a = note.data;
+            } else if (this.$route.query.id == 1) {
+                a = photo.data;
+            }
+            return a;
+        }
     },
     methods: {
         selectNode(e) {
@@ -76,8 +101,11 @@ export default {
         },
 
         closeModal() {
-            this.changeModal();
+            this.modal = false;
             this.cardSelected = -1;
+            if (this.id == 1) {
+                this.view = false
+            }
         },
 
         //卡片的样式
@@ -86,19 +114,55 @@ export default {
             if (e != this.cardSelected) {
                 this.cardSelected = e;
                 this.modal = true;
+                if (this.id == 1) {
+                    this.view = true;
+                }
             } else {
                 this.cardSelected = -1
                 this.modal = false;
+                if (this.id == 1) {
+                    this.view = false
+                }
             }
         },
         addCard() {
             this.title = '写留言';
-            this.changeModal();
+            this.modal = true;
+        },
+        getPhoto() {
+            for (let i = 0; i < this.photo.length; i++) {
+                this.photoArr.push(this.photo[i].imgurl)
+            }
+            console.log(this.photoArr)
+        },
+        viewSwitch(e) {
+            if (e == 0) {
+                if (this.cardSelected == 0) {
+                    this.cardSelected = this.photoArr.length
+                }
+                this.cardSelected--;
+            }
+            else {
+                if (this.cardSelected == this.photoArr.length - 1) {
+                    this.cardSelected = -1;
+                }
+                this.cardSelected++;
+            }
+        }
+    },
+    watch: {
+        id() {
+            this.modal = false;
+            this.view = false;
+            this.nlabel = -1;
+            this.cardSelected = -1;
         }
     },
     mounted() {
         window.addEventListener('scroll', this.scrollBottom)
-    }
+        this.getPhoto();
+    },
+
 }
 </script>
 
@@ -164,6 +228,19 @@ export default {
 
     }
 
+    .photo {
+        padding-top: 30px;
+        width: 88%;
+        margin: 0 auto;
+        columns: 6;
+        column-gap: 4px
+    }
+
+    .photo-card {
+        margin-bottom: 4px;
+        break-inside: avoid;
+    }
+
     .add {
         display: flex;
         justify-content: center;
@@ -175,7 +252,6 @@ export default {
         border-radius: 28px;
         position: fixed;
         right: 30px;
-
         transition: all 1s;
 
         .icon-plus {

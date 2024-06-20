@@ -23,45 +23,50 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.copyright-fieldset {
-    border: 1.5px dashed #008cff;
-    padding: 10px;
-    border-radius: 5px;
-    line-height: 2em;
-    font-weight: 700;
-    color: var(--key-color);
-    background-color: var(--body-bg-color);
+.foot-bar {
 
-    .copyright-legend {
-        margin-bottom: -2px;
-        width: 30%;
-        text-align: center;
-        background-color: #008cff;
-        border-radius: 999px;
-        background-image: linear-gradient(to right, #FFCC99, #FF99CC);
+
+    .copyright-fieldset {
+
         border: 1.5px dashed #008cff;
-    }
+        padding: 10px;
+        border-radius: 5px;
+        line-height: 2em;
+        font-weight: 700;
+        color: var(--key-color);
+        background-color: var(--body-bg-color);
 
-    .btn-info {
-        &.btn-xs {
-            font-size: 12px;
+        .copyright-legend {
+            margin-bottom: -2px;
+            width: 30%;
+            text-align: center;
+            background-color: #008cff;
+            border-radius: 999px;
+            background-image: linear-gradient(to right, #FFCC99, #FF99CC);
+            border: 1.5px dashed #008cff;
         }
-    }
 
-    .site-name {
-        color: #3333ff;
-
-        span {
-            color: #09ace2;
-
-            strong {
-                font-weight: bold;
+        .btn-info {
+            &.btn-xs {
+                font-size: 12px;
             }
         }
-    }
 
-    .site-url {
-        color: #09ace2;
+        .site-name {
+            color: #3333ff;
+
+            span {
+                color: #09ace2;
+
+                strong {
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .site-url {
+            color: #09ace2;
+        }
     }
 }
 </style>
